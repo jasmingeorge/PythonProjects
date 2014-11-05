@@ -35,8 +35,39 @@ from runner.koan import *
 
 def score(dice):
     # You need to write this method
-    pass
+	dice.sort()
+	if len(dice)<5:
+		while len(dice)<5:
+			dice.append(0)
+	points = 0
+	if dice[0]==dice[1]==dice[2]==1:
+		points +=1000
+		points += count_1and5(dice[3],dice[4])
+	elif (dice[0]==dice[1]==dice[2]!=0):
+		points +=dice[0]*100
+		points += count_1and5(dice[3],dice[4])
+	elif (dice[1]==dice[2]==dice[3]!=0):
+		points += dice[1]*100
+		points += count_1and5(dice[0],dice[4])	
+	elif (dice[2]==dice[3]==dice[4]!=0):
+		points += dice[2]*100
+		points += count_1and5(dice[0],dice[1])
+	else:
+		for i in dice:
+			if(i==1):
+				points +=100
+			if(i==5):
+				points += 50
+	return points
 
+def count_1and5(a,b):
+	points = 0
+	for i in [a,b]:
+		if(i==1):
+			points += 100
+		if(i==5):
+			points += 50
+	return points
 
 class AboutScoringProject(Koan):
     def test_score_of_an_empty_list_is_zero(self):

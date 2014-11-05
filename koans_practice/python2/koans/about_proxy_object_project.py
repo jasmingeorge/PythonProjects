@@ -17,17 +17,41 @@
 # can do it!
 
 from runner.koan import *
-
+from collections import Counter
 
 class Proxy(object):
-    def __init__(self, target_object):
-        # WRITE CODE HERE
+	def __init__(self, target_object):
+		self._messages = []
+		self._obj = target_object
 
-        #initialize '_obj' attribute last. Trust me on this!
-        self._obj = target_object
+	def messages(self):
+		return self._messages
 
-    # WRITE CODE HERE
+	def was_called(self, message):
+		return message in self._messages
 
+	def number_of_times_called(self,message):
+		_count = Counter(self._messages).get(message)
+		if(_count):
+			return _count
+		else:
+			return 0
+
+	def __getattribute__(self, name):
+		try:
+			retval = object.__getattribute__(self, name)
+		except AttributeError:
+			retval = self._obj.__getattribute__(name)
+			object.__getattribute__(self, '_messages').append(name)
+
+		return retval
+ 
+	def __setattr__(self, name, value):
+		if hasattr(self, '_obj'):
+			self._obj.__setattr__(name,value)
+			object.__getattribute__(self, '_messages').append(name)
+		else:
+			object.__setattr__(self, name, value)
 
 # The proxy object should pass the following Koan:
 #
